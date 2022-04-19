@@ -1,8 +1,8 @@
-import fastify from "fastify";
+import { SECRET_KEY } from "./../app/config/config";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { stdout } from "process";
 import { PORT } from "../app/config/config";
 import router from "./router";
-
 const app = fastify({ logger: false, connectionTimeout: 10000 });
 
 class AppServer {
@@ -11,7 +11,12 @@ class AppServer {
     this.plugins();
     this.routes();
   }
-  private async plugins() {}
+  private async plugins() {
+    app.register(require("fastify-cookie"), {
+      secret: SECRET_KEY,
+      parseOptions: {},
+    });
+  }
   private async routes() {
     app.register(router, { prefix: "api" });
   }
